@@ -7,19 +7,41 @@
 //
 
 import UIKit
+import WebKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, WKNavigationDelegate {
+    
+    var webView: WKWebView!
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        //Set up WebView configuration
+        let webViewConfig = WKWebViewConfiguration()
+        webViewConfig.allowsInlineMediaPlayback = true
+        webViewConfig.allowsAirPlayForMediaPlayback = true
+        webViewConfig.allowsPictureInPictureMediaPlayback = true
+        webViewConfig.requiresUserActionForMediaPlayback = false
+        
+        //Fire up the web view
+        webView = WKWebView.init(frame: self.view.frame, configuration: webViewConfig)
+        webView.navigationDelegate = self
+        webView.allowsBackForwardNavigationGestures = true
+        webView.allowsLinkPreview = true
+        
+        //We don't need anything else right now, so set up web view as our only fullscreen view
+        self.view = webView;
+        
+        webView.loadRequest(NSURLRequest(URL: NSURL(string: "https://www.google.com")!))
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
-
+    
+    override func prefersStatusBarHidden() -> Bool {
+        //make sure the status bar is hidden 
+        //in the future, we might want to build a decent UI and set this to false, just like safari
+        return true
+    }
 }
 
